@@ -34,6 +34,7 @@ maxpenwidth = xdim / 30;
 minpenwidth = xdim / 400;
 maxangspeed = 0.10 * math.pi / 180.0;
 maxangaccel = maxangspeed / 10.0;
+brightfactor = 1.1;
 
 outputimg = Image.new("RGB", (xdim, ydim));
 draw = ImageDraw.Draw(outputimg);
@@ -48,10 +49,20 @@ def choose_colors():
    lb = fb + random.random() *  ((1.0 - d) * 0.8);
    return (fr * 255, fg * 255, fb * 255), (lr * 255, lg * 255, lb * 255);
 
+def brighten_color((r, g, b)):
+   r = int(min(brightfactor * r, 255));
+   g = int(min(brightfactor * g, 255));
+   b = int(min(brightfactor * b, 255));
+   return (r, g, b);
+
 def clear_image():
    for x in range(0, int(xdim)):
       for y in range(0, int(ydim)):
          outputimg.putpixel((x, y), (255, 255, 255));
+
+def paintpixel((x, y), (r, g, b)):
+   if (x >= 0 and x < xdim and y >= 0 and y < ydim):
+      outputimg.putpixel((x, y), (r, g, b));
 
 class pen:
    def __init__(self):
@@ -83,10 +94,13 @@ class pen:
       x2 = self.x - math.cos(self.angle) * self.width / 2.0;
       y2 = self.y - math.sin(self.angle) * self.width / 2.0;
       draw.line([(int(x1), int(y1)), (int(x2), int(y2))], fill=0);
+      paintpixel((int(x1), int(y1)), (0, 255, 0));
+      paintpixel((int(x2), int(y2)), (0, 255, 0));
       x1 = xdim - x1;
       x2 = xdim - x2;
       draw.line([(int(x1), int(y1)), (int(x2), int(y2))], fill=0);
-
+      paintpixel((int(x1), int(y1)), (0, 255, 0));
+      paintpixel((int(x2), int(y2)), (0, 255, 0));
 
 def sample_gradient(y, (fr, fg, fb), (lr, lg, lb)):
    r = (float(y) / float(ydim)) * (float(lr) - float(fr)) + float(fr);
@@ -111,7 +125,13 @@ for x in range(xdim):
       if (r == 255):
          r, g, b = sample_gradient(y, firstcolor, lastcolor);
       else:
-         r, g, b = sample_gradient(y, lastcolor, firstcolor);
+         if (g == 255):
+            if (y < ydim / 2.0):
+		    r, g, b = brighten_color(sample_gradient(y, lastcolor, firstcolor));
+            else:
+		    r, g, b = brighten_color(sample_gradient(y, firstcolor, lastcolor));
+         else:
+            r, g, b = sample_gradient(y, lastcolor, firstcolor);
       outputimg.putpixel((x, y), (r, g, b));
 
 outputimg.save("output.png");
