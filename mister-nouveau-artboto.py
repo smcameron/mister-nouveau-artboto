@@ -38,6 +38,16 @@ maxangaccel = maxangspeed / 10.0;
 outputimg = Image.new("RGB", (xdim, ydim));
 draw = ImageDraw.Draw(outputimg);
 
+def choose_colors():
+   d = 0.6;
+   fr = random.random() * d;
+   fg = random.random() * d;
+   fb = random.random() * d;
+   lr = fr + random.random() *  ((1.0 - d) * 0.8);
+   lg = fg + random.random() *  ((1.0 - d) * 0.8);
+   lb = fb + random.random() *  ((1.0 - d) * 0.8);
+   return (fr * 255, fg * 255, fb * 255), (lr * 255, lg * 255, lb * 255);
+
 def clear_image():
    for x in range(0, int(xdim)):
       for y in range(0, int(ydim)):
@@ -77,6 +87,14 @@ class pen:
       x2 = xdim - x2;
       draw.line([(int(x1), int(y1)), (int(x2), int(y2))], fill=0);
 
+
+def sample_gradient(y, (fr, fg, fb), (lr, lg, lb)):
+   r = (float(y) / float(ydim)) * (float(lr) - float(fr)) + float(fr);
+   g = (float(y) / float(ydim)) * (float(lg) - float(fg)) + float(fg);
+   b = (float(y) / float(ydim)) * (float(lb) - float(fb)) + float(fb);
+
+   return (int(r), int(g), int(b));
+
 clear_image();
 
 for i in range(20):
@@ -84,6 +102,17 @@ for i in range(20):
    for j in range(45000):
       p.move();
       p.paint();
+
+firstcolor, lastcolor = choose_colors();
+
+for x in range(xdim):
+   for y in range(ydim):
+      r, g, b = outputimg.getpixel((x, y));
+      if (r == 255):
+         r, g, b = sample_gradient(y, firstcolor, lastcolor);
+      else:
+         r, g, b = sample_gradient(y, lastcolor, firstcolor);
+      outputimg.putpixel((x, y), (r, g, b));
 
 outputimg.save("output.png");
 
