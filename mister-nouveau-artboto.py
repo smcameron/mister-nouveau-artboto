@@ -34,19 +34,19 @@ maxpenwidth = xdim / 30;
 minpenwidth = xdim / 400;
 maxangspeed = 0.10 * math.pi / 180.0;
 maxangaccel = maxangspeed / 10.0;
-brightfactor = 1.1;
+brightfactor = 1.5;
 
 outputimg = Image.new("RGB", (xdim, ydim));
 draw = ImageDraw.Draw(outputimg);
 
 def choose_colors():
-   d = 0.6;
+   d = 0.5;
    fr = random.random() * d;
    fg = random.random() * d;
    fb = random.random() * d;
-   lr = fr + random.random() *  ((1.0 - d) * 0.8);
-   lg = fg + random.random() *  ((1.0 - d) * 0.8);
-   lb = fb + random.random() *  ((1.0 - d) * 0.8);
+   lr = fr + random.random() *  ((1.0 - d) * 0.9);
+   lg = fg + random.random() *  ((1.0 - d) * 0.9);
+   lb = fb + random.random() *  ((1.0 - d) * 0.9);
    return (fr * 255, fg * 255, fb * 255), (lr * 255, lg * 255, lb * 255);
 
 def brighten_color((r, g, b)):
