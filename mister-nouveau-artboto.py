@@ -70,6 +70,9 @@ class pen:
       self.y = 1.0 * ydim;
       self.direction = 90 * math.pi / 180.0;
       self.direction += (((random.random() * 2.0) - 1.0) * 10 * math.pi / 180.0);
+      if (random.random() < 0.5):
+         self.direction += math.pi;
+         self.y = 0;
       self.speed = random.random() * (maxspeed - minspeed) + minspeed;
       self.angle = (((random.random() * 2.0) - 1.0) * 30 * math.pi / 180.0);
       self.width = random.random() * random.random() * (maxpenwidth - minpenwidth) + minpenwidth;
