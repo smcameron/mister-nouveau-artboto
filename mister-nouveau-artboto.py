@@ -73,6 +73,9 @@ class pen:
       x2 = self.x - math.cos(self.angle) * self.width / 2.0;
       y2 = self.y - math.sin(self.angle) * self.width / 2.0;
       draw.line([(int(x1), int(y1)), (int(x2), int(y2))], fill=0);
+      x1 = xdim - x1;
+      x2 = xdim - x2;
+      draw.line([(int(x1), int(y1)), (int(x2), int(y2))], fill=0);
 
 clear_image();
 
