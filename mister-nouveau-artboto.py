@@ -32,6 +32,8 @@ maxspeed = 0.10;
 minspeed = 0.001;
 maxpenwidth = xdim / 30;
 minpenwidth = xdim / 400;
+maxangspeed = 0.10 * math.pi / 180.0;
+maxangaccel = maxangspeed / 10.0;
 
 outputimg = Image.new("RGB", (xdim, ydim));
 draw = ImageDraw.Draw(outputimg);
@@ -50,10 +52,20 @@ class pen:
       self.speed = random.random() * (maxspeed - minspeed) + minspeed;
       self.angle = (((random.random() * 2.0) - 1.0) * 30 * math.pi / 180.0);
       self.width = random.random() * random.random() * (maxpenwidth - minpenwidth) + minpenwidth;
+      self.angularspeed = ((random.random() * 2.0) - 1.0) * maxangspeed;
+      self.angularaccel = ((random.random() * 2.0) - 1.0) * maxangaccel;
 
    def move(self):
       self.x = self.x + math.cos(self.direction) * self.speed;
       self.y = self.y - math.sin(self.direction) * self.speed;
+      self.direction += self.angularspeed;
+      self.angularspeed += self.angularaccel;
+      if (self.angularspeed < -maxangspeed and self.angularaccel < 0.0):
+         self.angularspeed = -maxangspeed;
+         self.angularaccel = ((random.random() * 2.0) - 1.0) * maxangaccel;
+      if (self.angularspeed > maxangspeed and self.angularaccel > 0.0):
+         self.angularspeed = maxangspeed;
+         self.angularaccel = ((random.random() * 2.0) - 1.0) * maxangaccel;
 
    def paint(self):
       x1 = self.x + math.cos(self.angle) * self.width / 2.0;
