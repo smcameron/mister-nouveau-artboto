@@ -40,13 +40,13 @@ outputimg = Image.new("RGB", (xdim, ydim));
 draw = ImageDraw.Draw(outputimg);
 
 def choose_colors():
-   d = 0.5;
+   d = 0.2;
    fr = random.random() * d;
    fg = random.random() * d;
    fb = random.random() * d;
-   lr = fr + random.random() *  ((1.0 - d) * 0.9);
-   lg = fg + random.random() *  ((1.0 - d) * 0.9);
-   lb = fb + random.random() *  ((1.0 - d) * 0.9);
+   lr = fr + random.random() *  ((1.0 - d) * 0.99);
+   lg = fg + random.random() *  ((1.0 - d) * 0.99);
+   lb = fb + random.random() *  ((1.0 - d) * 0.99);
    return (fr * 255, fg * 255, fb * 255), (lr * 255, lg * 255, lb * 255);
 
 def brighten_color((r, g, b)):
