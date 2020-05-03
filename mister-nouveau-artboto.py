@@ -21,8 +21,9 @@
 #
 
 import sys
-import Image
-import ImageDraw
+from PIL import \
+    Image, \
+    ImageDraw
 import math
 import random
 
@@ -49,7 +50,8 @@ def choose_colors():
    lb = fb + random.random() *  ((1.0 - d) * 0.99);
    return (fr * 255, fg * 255, fb * 255), (lr * 255, lg * 255, lb * 255);
 
-def brighten_color((r, g, b)):
+def brighten_color(rgb):
+   (r, g, b) = rgb
    r = int(min(brightfactor * r, 255));
    g = int(min(brightfactor * g, 255));
    b = int(min(brightfactor * b, 255));
@@ -60,7 +62,9 @@ def clear_image():
       for y in range(0, int(ydim)):
          outputimg.putpixel((x, y), (255, 255, 255));
 
-def paintpixel((x, y), (r, g, b)):
+def paintpixel(xy, rgb):
+   (x, y) = xy
+   (r, g, b) = rgb
    if (x >= 0 and x < xdim and y >= 0 and y < ydim):
       outputimg.putpixel((x, y), (r, g, b));
 
@@ -105,7 +109,9 @@ class pen:
       paintpixel((int(x1), int(y1)), (0, 255, 0));
       paintpixel((int(x2), int(y2)), (0, 255, 0));
 
-def sample_gradient(y, (fr, fg, fb), (lr, lg, lb)):
+def sample_gradient(y, frgb, lrgb):
+   (fr, fg, fb) = frgb
+   (lr, lg, lb) = lrgb
    r = (float(y) / float(ydim)) * (float(lr) - float(fr)) + float(fr);
    g = (float(y) / float(ydim)) * (float(lg) - float(fg)) + float(fg);
    b = (float(y) / float(ydim)) * (float(lb) - float(fb)) + float(fb);
@@ -130,9 +136,9 @@ for x in range(xdim):
       else:
          if (g == 255):
             if (y < ydim / 2.0):
-		    r, g, b = brighten_color(sample_gradient(y, lastcolor, firstcolor));
+               r, g, b = brighten_color(sample_gradient(y, lastcolor, firstcolor));
             else:
-		    r, g, b = brighten_color(sample_gradient(y, firstcolor, lastcolor));
+               r, g, b = brighten_color(sample_gradient(y, firstcolor, lastcolor));
          else:
             r, g, b = sample_gradient(y, lastcolor, firstcolor);
       outputimg.putpixel((x, y), (r, g, b));
